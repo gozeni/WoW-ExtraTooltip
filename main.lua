@@ -1,5 +1,6 @@
 frame = CreateFrame('Frame');
 windowMerchantOpened = false;
+tooltipModified = {};
 
 local function RegisterEvents(self, ...)
     for i=1,select('#', ...) do
@@ -16,5 +17,9 @@ local function eventHandler(self, event, ...)
     end
 end
 frame:SetScript("OnEvent", eventHandler);
+
+function GameTooltip_OnTooltipCleared(tooltip)
+    tooltipModified[tooltip:GetName()] = nil;
+end
 
 RegisterEvents(frame, 'MERCHANT_SHOW', 'MERCHANT_CLOSED');

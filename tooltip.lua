@@ -2,6 +2,8 @@ local function GameTooltip_OnTooltipSetItem(tooltip, data)
     assert(tooltip, "Tooltip window not loading properly");
 
     local _, link = tooltip:GetItem();
+    if tooltipModified[tooltip:GetName()] then return; end
+    tooltipModified[tooltip:GetName()] = true;
     if not link or windowMerchantOpened then return; end
 
     local focus = GetMouseFocus();
@@ -10,7 +12,7 @@ local function GameTooltip_OnTooltipSetItem(tooltip, data)
     local itemStackCount = select(8, GetItemInfo(link));
     local itemPrice = select(11, GetItemInfo(link));
     local currentStackCount = (bagId ~= nil and slotId ~= nil) and C_Container.GetContainerItemInfo(bagId, slotId).stackCount or 1;
-    if currentStackCount < 2 then return; end
+    if not itemPrice or itemPrice == 0 or currentStackCount < 2 then return; end
 
     local itemPriceGold = floor(itemPrice / 10000);
     local itemPriceSilver = floor((itemPrice - itemPriceGold * 10000) / 100);
@@ -34,3 +36,4 @@ local function GameTooltip_OnTooltipSetItem(tooltip, data)
 end
 
 TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, GameTooltip_OnTooltipSetItem);
+GameTooltip:HookScript("OnTooltipCleared", GameTooltip_OnTooltipCleared);
