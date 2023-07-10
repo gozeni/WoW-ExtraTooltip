@@ -21,9 +21,15 @@ local function GameTooltip_OnTooltipSetItem(tooltip, data)
 
     local itemString = string.match(link, "item[%-?%d:]+");
     local _, itemId = strsplit(":", itemString);
+    local shouldUpdate = false;
 
     if itemPrice > 0 and currentStackCount > 1 and itemStackCount > 1 and frameName ~= 'QuestInfoRewardsFrame' then
         tooltip:AddDoubleLine('Sell One: ' .. itemPriceText, 'Stack: ' .. itemStackCount, 1, 1, 1, 1, 1, 1);
+        shouldUpdate = true;
+    end
+
+    if shouldUpdate == true then
+        tooltip:Show();
     end
 end
 

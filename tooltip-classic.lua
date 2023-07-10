@@ -1,15 +1,22 @@
+local tooltipModified = {};
+
 local function GameTooltip_OnTooltipSetItem(tooltip)
     assert(tooltip, "Tooltip window not loading properly");
 
     local _, link = tooltip:GetItem();
+    if tooltipModified[tooltip:GetName()] then
+        -- Item tooltips that have recipes are called twice
+        return
+    end
     if not link or windowMerchantOpened then return; end
+    tooltipModified[tooltip:GetName()] = true;
 
     local focus = GetMouseFocus();
     local bagId, slotId, frameName = focus:GetParent():GetID(), focus:GetID(), focus:GetParent():GetName();
 
     local itemStackCount = select(8, GetItemInfo(link));
     local itemPrice = select(11, GetItemInfo(link));
-    local currentStackCount = (bagId ~= nil and slotId ~= nil) and C_Container.GetContainerItemInfo(bagId, slotId).stackCount or 1;
+    local currentStackCount = (bagId ~= nil and slotId ~= nil and C_Container.GetContainerItemInfo(bagId, slotId) ~=nil) and C_Container.GetContainerItemInfo(bagId, slotId).stackCount or 1;
     local stackPrice = itemPrice * currentStackCount;
 
     local itemPriceGold = floor(itemPrice / 10000);
@@ -28,13 +35,25 @@ local function GameTooltip_OnTooltipSetItem(tooltip)
 
     local itemString = string.match(link, "item[%-?%d:]+");
     local _, itemId = strsplit(":", itemString);
+    local shouldUpdate = false;
 
     if itemPrice > 0 then
         tooltip:AddDoubleLine('Sell Price: ' .. itemPriceText, '', 1, 1, 1, 1, 1, 1);
+        shouldUpdate = true;
     end
     if itemPrice > 0 and currentStackCount > 1 and itemStackCount > 1 and frameName ~= 'QuestInfoRewardsFrame' then
         tooltip:AddDoubleLine('Sell All: ' .. stackPriceText, 'Stack: ' .. itemStackCount, 1, 1, 1, 1, 1, 1);
+        shouldUpdate = true;
+    end
+
+    if shouldUpdate == true then
+        tooltip:Show();
     end
 end
 
+local function GameTooltip_OnTooltipCleared(tooltip)
+    tooltipModified[tooltip:GetName()] = nil;
+end
+
 GameTooltip:HookScript("OnTooltipSetItem", GameTooltip_OnTooltipSetItem);
+GameTooltip:HookScript("OnTooltipCleared", GameTooltip_OnTooltipCleared);
