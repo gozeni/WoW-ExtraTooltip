@@ -16,7 +16,7 @@ local function GameTooltip_OnTooltipSetItem(tooltip)
     local currentStackCount = focus.count ~= nil and focus.count or 1;
     if bagId ~= nil and slotId ~= nil and string.find(frameName, 'ContainerFrame[%d]+') ~= nil then
         local containerItemInfo = C_Container.GetContainerItemInfo(bagId, slotId);
-        if containerItemInfo.hasNoValue == true then return; end
+        if containerItemInfo ~= nil and containerItemInfo.hasNoValue == true then return; end
     end
 
     if slotId ~= nil and focus.count == nil and frameName == 'LootFrame' then
