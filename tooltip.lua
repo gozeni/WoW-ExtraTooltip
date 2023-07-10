@@ -7,11 +7,18 @@ local function GameTooltip_OnTooltipSetItem(tooltip, data)
     if not link or windowMerchantOpened then return; end
 
     local focus = GetMouseFocus();
-    local bagId, slotId, frameName = focus:GetBagID(), focus:GetID(), focus:GetParent():GetName();
+    local bagId, slotId, frameName = focus:GetBagID(), focus:GetID(), focus:GetName();
 
     local itemStackCount = select(8, GetItemInfo(link));
     local itemPrice = select(11, GetItemInfo(link));
-    local currentStackCount = (bagId ~= nil and slotId ~= nil) and C_Container.GetContainerItemInfo(bagId, slotId).stackCount or 1;
+    if not itemPrice or itemPrice == 0 or itemStackCount < 2 then return; end
+
+    local currentStackCount = focus.count ~= nil and focus.count or 1;
+    if bagId ~= nil and slotId ~= nil and string.find(frameName, 'ContainerFrame[%d]+Item[%d]+') ~= nil then
+        local containerItemInfo = C_Container.GetContainerItemInfo(bagId, slotId);
+        if containerItemInfo.hasNoValue == true then return; end
+    end
+
     if not itemPrice or itemPrice == 0 or currentStackCount < 2 then return; end
 
     local itemPriceGold = floor(itemPrice / 10000);

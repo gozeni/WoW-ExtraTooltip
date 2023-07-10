@@ -13,7 +13,17 @@ local function GameTooltip_OnTooltipSetItem(tooltip)
     local itemPrice = select(11, GetItemInfo(link));
     if not itemPrice or itemPrice == 0 then return; end
 
-    local currentStackCount = (bagId ~= nil and slotId ~= nil and C_Container.GetContainerItemInfo(bagId, slotId) ~=nil) and C_Container.GetContainerItemInfo(bagId, slotId).stackCount or 1;
+    local currentStackCount = focus.count ~= nil and focus.count or 1;
+    if bagId ~= nil and slotId ~= nil and string.find(frameName, 'ContainerFrame[%d]+') ~= nil then
+        local containerItemInfo = C_Container.GetContainerItemInfo(bagId, slotId);
+        if containerItemInfo.hasNoValue == true then return; end
+    end
+
+    if slotId ~= nil and focus.count == nil and frameName == 'LootFrame' then
+        currentStackCount = select(3, GetLootSlotInfo(slotId));
+    end
+
+    if not itemPrice or itemPrice == 0 then return; end
     local stackPrice = itemPrice * currentStackCount;
 
     local itemPriceGold = floor(itemPrice / 10000);
@@ -33,7 +43,7 @@ local function GameTooltip_OnTooltipSetItem(tooltip)
     local itemString = string.match(link, "item[%-?%d:]+");
     local _, itemId = strsplit(":", itemString);
     local shouldUpdate = false;
-    local displayStack = itemPrice > 0 and currentStackCount > 1 and itemStackCount > 1 and frameName ~= 'QuestInfoRewardsFrame';
+    local displayStack = itemPrice > 0 and currentStackCount > 1 and itemStackCount > 1;
 
     if itemPrice > 0 then
         tooltip:AddDoubleLine(displayStack and ('Sell One: ' .. itemPriceText) or ('Sell Price: ' .. itemPriceText), '', 1, 1, 1, 1, 1, 1);
