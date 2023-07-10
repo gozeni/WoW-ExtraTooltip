@@ -1,6 +1,6 @@
 ## Interface: 100100
 ## Title: Extra Tooltip
-## Version: 0.2
+## Version: 1.0
 
 main.lua
 tooltip.lua
