@@ -5,7 +5,7 @@ local function GameTooltip_OnTooltipSetItem(tooltip, data)
     if not link or windowMerchantOpened then return; end
 
     local focus = GetMouseFocus();
-    local bagId, slotId, frameName = focus:GetParent():GetID(), focus:GetID(), focus:GetParent():GetName();
+    local bagId, slotId, frameName = focus:GetBagID(), focus:GetID(), focus:GetParent():GetName();
 
     local itemStackCount = select(8, GetItemInfo(link));
     local itemPrice = select(11, GetItemInfo(link));
