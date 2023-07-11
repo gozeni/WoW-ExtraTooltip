@@ -23,7 +23,7 @@ local function GameTooltip_OnTooltipSetItem(tooltip)
     local itemPrice = select(11, GetItemInfo(link));
     if not itemPrice or itemPrice == 0 then return; end
 
-    local currentStackCount = focus.count ~= nil and focus.count or 1;
+    local currentStackCount = type(focus.count) == 'number' and focus.count or 1;
     if bagId ~= nil and slotId ~= nil and string.find(frameName, 'ContainerFrame[%d]+') ~= nil then
         local containerItemInfo = C_Container.GetContainerItemInfo(bagId, slotId);
         if containerItemInfo ~= nil and containerItemInfo.hasNoValue == true then return; end

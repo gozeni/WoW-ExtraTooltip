@@ -1,1 +1,1 @@
-Fix item level display on trade window
+Fix display on Shaman buff
