@@ -4,10 +4,7 @@ local function GameTooltip_OnTooltipSetItem(tooltip)
     local _, link = tooltip:GetItem();
     if tooltipModified[tooltip:GetName()] then return; end
     tooltipModified[tooltip:GetName()] = true;
-    if not link or windowMerchantOpened then return; end
-
-    local focus = GetMouseFocus();
-    local bagId, slotId, frameName = focus:GetParent():GetID(), focus:GetID(), focus:GetParent():GetName();
+    if not link then return; end
 
     local equipLoc = select(9, GetItemInfo(link));
     if equipLoc ~= '' and equipLoc ~= 'INVTYPE_BAG' then
@@ -16,6 +13,11 @@ local function GameTooltip_OnTooltipSetItem(tooltip)
             tooltip:AddLine('Item Level ' .. itemLevel, 1, 0.8, 0);
         end
     end
+
+    if windowMerchantOpened then return; end
+
+    local focus = GetMouseFocus();
+    local bagId, slotId, frameName = focus:GetParent():GetID(), focus:GetID(), focus:GetParent():GetName();
 
     local itemStackCount = select(8, GetItemInfo(link));
     local itemPrice = select(11, GetItemInfo(link));

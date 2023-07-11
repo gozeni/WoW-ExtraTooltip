@@ -1,1 +1,1 @@
-Add item level to classic
+Fix item level display on trade window
