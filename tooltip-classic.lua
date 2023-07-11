@@ -9,6 +9,14 @@ local function GameTooltip_OnTooltipSetItem(tooltip)
     local focus = GetMouseFocus();
     local bagId, slotId, frameName = focus:GetParent():GetID(), focus:GetID(), focus:GetParent():GetName();
 
+    local equipLoc = select(9, GetItemInfo(link));
+    if equipLoc ~= '' and equipLoc ~= 'INVTYPE_BAG' then
+        local itemLevel = select(1, GetDetailedItemLevelInfo(link));
+        if itemLevel ~= nil and itemLevel ~= '' then
+            tooltip:AddLine('Item Level ' .. itemLevel, 1, 0.8, 0);
+        end
+    end
+
     local itemStackCount = select(8, GetItemInfo(link));
     local itemPrice = select(11, GetItemInfo(link));
     if not itemPrice or itemPrice == 0 then return; end
