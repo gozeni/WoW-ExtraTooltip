@@ -1,1 +1,1 @@
-Fix display on Shaman buff
+Update retail version
