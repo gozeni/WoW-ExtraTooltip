@@ -18,13 +18,16 @@ local function GameTooltip_OnTooltipSetItem(tooltip)
 
     local focus = GetMouseFocus();
     local bagId, slotId, frameName = focus:GetParent():GetID(), focus:GetID(), focus:GetParent():GetName();
+    if (string.find(focus:GetName(), 'BagnonContainerItem[%d]+') ~= nil) then
+        frameName = focus:GetName();
+    end
 
     local itemStackCount = select(8, GetItemInfo(link));
     local itemPrice = select(11, GetItemInfo(link));
     if not itemPrice or itemPrice == 0 then return; end
 
     local currentStackCount = type(focus.count) == 'number' and focus.count or 1;
-    if bagId ~= nil and slotId ~= nil and string.find(frameName, 'ContainerFrame[%d]+') ~= nil then
+    if bagId ~= nil and slotId ~= nil and (string.find(frameName, 'ContainerFrame[%d]+') ~= nil or string.find(frameName, 'BagnonContainerItem[%d]+') ~= nil) then
         local containerItemInfo = C_Container.GetContainerItemInfo(bagId, slotId);
         if containerItemInfo ~= nil and containerItemInfo.hasNoValue == true then return; end
     end
@@ -33,7 +36,6 @@ local function GameTooltip_OnTooltipSetItem(tooltip)
         currentStackCount = select(3, GetLootSlotInfo(slotId));
     end
 
-    if not itemPrice or itemPrice == 0 then return; end
     local stackPrice = itemPrice * currentStackCount;
 
     local itemPriceGold = floor(itemPrice / 10000);
