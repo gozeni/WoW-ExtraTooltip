@@ -1,1 +1,1 @@
-Update retail version
+Fix Bagnon tooltips
